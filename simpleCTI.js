@@ -42,17 +42,18 @@ SimpleCTI = function(username, password, statusCB, ringCB, upCB, deadCB) {
 
 
 /**
+ * Status (initialisation) event callback
  * @callback SimpleCTI~statusCallback
  * @param ok {Boolean} true or false:
  *	true: API successfully started
  * 	false: error condition
  * @param code {number} numeric API error code (status == false only)
- * @param text {String} extual explanation suitable for user display
+ * @param text {String} textual explanation suitable for user display
  * 
  */
 
 /**
- * This callback is displayed as a global member.
+ * Call event callback
  * @callback SimpleCTI~eventCallback
  * @param state {String} one of 'ring', 'up', 'dead' - new state of call
  * @param number {String} The Caller ID of the other party. Caution: may not be numeric in all cases

@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<script src="simpleCTI.js" type="text/javascript"></script>
+<!-- *** Substitute your appliance domain name below *** -->
+<script src="http://pabx.phone.voipcortex.co.uk/api/wrapper.whtm" type="text/javascript"></script>
+<script>
+
+// *** Substitute a real username and password below ***
+var CTI = new SimpleCTI("user1", "password", statusCB, eventCB, eventCB, eventCB);
+
+// Status callback - just insert anything we get into the <h2> in the body
+function statusCB(status, code, reason){
+	var status = document.getElementById('status');
+	status.innerHTML=reason+" ("+code+")";
+
+}
+
+// Call event callback - we use the same callback for all three event types
+//  and key off the first state parameter to work out what to do.
+function eventCB(state, number, party, call, line){
+	var callstatus = document.getElementById('callstatus');
+	var statuspanel = document.getElementById('statuspanel');
+	console.log('got '+state+' event to number '+number+' we are the '+party);
+	switch (state){
+	case 'ring':
+			description = 'Ringing: ';
+			break;
+	case 'up': 
+		description = 'Answered: ';
+		break;
+	case 'dead':
+		description = 'Nothing Doing, last call was: ';
+		break;
+	}
+	if(party=='callee')
+		description += number+' calling us';
+	else
+		description += 'calling '+number;
+	if(state != 'dead')
+		description += ' <a href="#" onClick="CTI.hangup(\''+call.attr.id+'\')">hangup</a>';
+	if(state == 'ring')
+			description += ' <a href="#" onClick="CTI.answer(\''+call.attr.id+'\')">answer</a>';
+	callstatus.innerHTML=description;
+	statuspanel.src = 'http://www.google.com/custom?q='+number;
+}
+
+</script>
+
+
+<title>Simple CTI Test page</title>
+</head>
+<body>
+	<h1>Simple CTI Test</h1>
+	<p>This page displays the status and a google lookup of the phone number for any inbound or outbound call</p>
+
+	<h2 id="status">API not initialised</h1>
+
+	<input id="thenumber" type="text"></input>
+	<button onClick="CTI.dial(document.getElementById('thenumber').value);">Dial me</button>
+
+	<h1 id="callstatus">Nothing doing</h1>
+	<iframe id="statuspanel" height="400" width="100%"></iframe>
+</body>
+</html>

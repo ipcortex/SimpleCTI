@@ -69,7 +69,7 @@ SimpleCTI = function(username, password, statusCB, ringCB, upCB, deadCB) {
  */
 SimpleCTI.prototype.Init = function() {
 	var _this = this;
-	IPCortex.PBX.Auth.login(_this.username, _this.password, true, (function(ok){_this.authCB(ok);}));
+	IPCortex.PBX.Auth.login(_this.username, _this.password, null, (function(ok){_this.authCB(ok);}));
 };
 
 /**

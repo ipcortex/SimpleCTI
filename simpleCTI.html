@@ -39,7 +39,7 @@ function eventCB(state, number, party, call, line){
 		description += 'calling '+number;
 	if(state != 'dead')
 		description += ' <a href="#" onClick="CTI.hangup(\''+call.attr.id+'\')">hangup</a>';
-	if(state == 'ring')
+	if(state == 'ring' && party == 'callee')
 		description += ' <a href="#" onClick="CTI.answer(\''+call.attr.id+'\')">answer</a>';
 	callstatus.innerHTML=description;
 	statuspanel.src = 'http://www.google.com/custom?q='+number;

@@ -1,24 +1,45 @@
 /**
-* Really simple example of a CTI class that allows client side Javascript to interact
-* with a PBX
-*/
+ * Really simple example of a CTI class that allows client side Javascript to interact
+ * with a PBX
+ */
 
 /**
-* Creates a new SimpleCTI singleton and initialises it with the user info
-* that it will use to authenticate against the PBX. Plants callbacks
-* that will be used to signal API startup completion and called when
-* a call status changes on a line.
-*
-* @constructor
-*
-* @param {String} username A valid PBX username for a user who owns a phone
-* @param {String} password Password
-* @param {SimpleCTI~statusCallback} statusCB to call on error or successful API initialisation
-* @param {SimpleCTI~eventCallback} [ringCB] to call when a line on users phone rings
-* @param {SimpleCTI~eventCallback} [upCB] to call when a line on users phone is answered
-* @param {SimpleCTI~eventCallback} [deadCB] to call when a line on users phone is hung up
-*/
-var SimpleCTI = (function(username, password, statusCB, ringCB, upCB, deadCB) {
+ * Creates a new SimpleCTI singleton and initialises it with the user info
+ * that it will use to authenticate against the PBX. Plants callbacks
+ * that will be used to signal API startup completion and called when
+ * a call status changes on a line.
+ *
+ * @constructor
+ *
+ * @param {String} username A valid PBX username for a user who owns a phone
+ * @param {String} password Password
+ * @param {SimpleCTI~statusCallback} statusCB to call on error or successful API initialisation
+ * @param {SimpleCTI~eventCallback} [ringCB] to call when a line on users phone rings
+ * @param {SimpleCTI~eventCallback} [upCB] to call when a line on users phone is answered
+ * @param {SimpleCTI~eventCallback} [deadCB] to call when a line on users phone is hung up
+ */
+ /**
+ * Status (initialisation) event callback
+ * @callback SimpleCTI~statusCallback
+ * @param ok {Boolean} true or false:
+ *      true: API successfully started
+ *      false: error condition
+ * @param code {number} numeric API error code (status == false only)
+ * @param text {String} textual explanation suitable for user display
+ *
+ */
+/**
+ * Call event callback
+ * @callback SimpleCTI~eventCallback
+ * @param state {String} one of 'ring', 'up', 'dead' - new state of call
+ * @param number {String} The Caller ID of the other party. Caution: may not be numeric in all cases
+ * @param party {String} 'caller' or 'callee' - defines which role we are
+ * @param call {Object} Raw underlying call object
+ * @param line {Object} Raw underlying line object
+ */
+
+
+ var SimpleCTI = (function(username, password, statusCB, ringCB, upCB, deadCB) {
 	var username = username
 	,	password = password
 	,	CB = {status: statusCB, ring: ringCB, up: upCB, dead: deadCB}
@@ -31,10 +52,10 @@ var SimpleCTI = (function(username, password, statusCB, ringCB, upCB, deadCB) {
 	,	lines = [];
 
 	/**
-	* This private method is called by the API when login is initialised
-	* Just checks login status and starts API polling
-	* @param ok
-	*/
+	 * This private method is called by the API when login is initialised
+	 * Just checks login status and starts API polling
+	 * @param ok
+	 */
 	function authCB(ok) {
 		console.log('SimpleCTI.authCB('+ok+')');
 

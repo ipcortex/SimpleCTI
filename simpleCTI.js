@@ -18,7 +18,7 @@
  * @param {SimpleCTI~eventCallback} [upCB] to call when a line on users phone is answered
  * @param {SimpleCTI~eventCallback} [deadCB] to call when a line on users phone is hung up
  */
- /**
+/**
  * Status (initialisation) event callback
  * @callback SimpleCTI~statusCallback
  * @param ok {Boolean} true or false:
@@ -30,49 +30,60 @@
  */
 /**
  * Call event callback
+ * 
  * @callback SimpleCTI~eventCallback
- * @param state {String} one of 'ring', 'up', 'dead' - new state of call
- * @param number {String} The Caller ID of the other party. Caution: may not be numeric in all cases
- * @param party {String} 'caller' or 'callee' - defines which role we are
- * @param call {Object} Raw underlying call object
- * @param line {Object} Raw underlying line object
+ * @param state
+ *            {String} one of 'ring', 'up', 'dead' - new state of call
+ * @param number
+ *            {String} The Caller ID of the other party. Caution: may not be
+ *            numeric in all cases
+ * @param party
+ *            {String} 'caller' or 'callee' - defines which role we are
+ * @param call
+ *            {Object} Raw underlying call object
+ * @param line
+ *            {Object} Raw underlying line object
  */
 
+var SimpleCTI = (function(username, password, statusCB, ringCB, upCB, deadCB) {
+	var username = username, 
+	password = password, 
+	CB = {
+			status : statusCB,
+			ring : ringCB,
+			up : upCB,
+			dead : deadCB
+	},
 
- var SimpleCTI = (function(username, password, statusCB, ringCB, upCB, deadCB) {
-	var username = username
-	,	password = password
-	,	CB = {status: statusCB, ring: ringCB, up: upCB, dead: deadCB}
-	
 	// Initialise an empty call list
-	,	calls = {}
-	,	callstate = {}
+	calls = {}, callstate = {}.
 
 	// Initialise an empty line array
-	,	lines = [];
+	lines = [];
 
 	/**
-	 * This private method is called by the API when login is initialised
-	 * Just checks login status and starts API polling
+	 * This private method is called by the API when login is initialised Just
+	 * checks login status and starts API polling
+	 * 
 	 * @param ok
 	 */
 	function authCB(ok) {
-		console.log('SimpleCTI.authCB('+ok+')');
+		console.log('SimpleCTI.authCB(' + ok + ')');
 
 		if (ok) {
-			/* Request the poller starts and initial PABX
-			 * config information is fetched and cached.
-			 * 'go' and 'error' are success/fail callbacks.
+			/*
+			 * Request the poller starts and initial PABX config information is
+			 * fetched and cached. 'go' and 'error' are success/fail callbacks.
 			 * 'error' will be called on any error event.
 			 */
 			IPCortex.PBX.startPoll(go, error);
-		}
-		else
+		} else
 			CB.status(false, -1, "Login failed");
 	}
 
 	/**
 	 * Handler for any error events
+	 * 
 	 * @param n
 	 * @param m
 	 */
@@ -94,15 +105,17 @@
 
 	/**
 	 * Handler for lines list callback
+	 * 
 	 * @param l
 	 */
 	function linesCB(l) {
-		console.log('SimpleCTI.linesCB('+l.length+')');
-		
+		console.log('SimpleCTI.linesCB(' + l.length + ')');
+
 		// Lines are returned in a list - Hook them all
 		while (l.length) {
-			var line = l.shift();			
-			/* In this example we allow the line to go out of scope once hooked
+			var line = l.shift();
+			/*
+			 * In this example we allow the line to go out of scope once hooked
 			 * this is OK as a reference is passed with the callback
 			 */
 			line.hook(lineEvent);
@@ -112,6 +125,7 @@
 
 	/**
 	 * Handler for PBX line event callback
+	 * 
 	 * @param f
 	 * @param h
 	 * @param l
@@ -119,33 +133,39 @@
 	function lineEvent(f, h, l) {
 		// Get a list of all calls on the line
 		calls = l.get('calls');
-		
+
 		// For each call
-		for (var x in calls) {
+		for ( var x in calls) {
 
 			// What is its new state
 			var currentState = calls[x].get('state');
-			console.log(l.get('name')+' - '+currentState);
+			console.log(l.get('name') + ' - ' + currentState);
 
 			// for each state that we are interested in
-			for(var state in {'ring':'', 'dead':'', 'up':''})
-				
-				// If we have a callback registered, and new call is in that state and 
+			for ( var state in {
+				'ring' : '',
+				'dead' : '',
+				'up' : ''
+			})
+
+				// If we have a callback registered, and new call is in that
+				// state and
 				// saved state is different
-				if(typeof CB[state] == 'function' &&
-						state == currentState && 
-						currentState != callstate[x])
+				if (typeof CB[state] == 'function' && state == currentState
+						&& currentState != callstate[x])
 					// Fire the callback
-					CB[state](state, calls[x].get('number'), calls[x].get('party'), calls[x], l);
-			
+					CB[state](state, calls[x].get('number'), calls[x]
+					.get('party'), calls[x], l);
+
 			// Save current state as old state unless it is dead
 			callstate[x] = currentState;
 		}
 	}
 
-	// Global onAPILoadReady is a special function called by ipcortex API wrapper
+	// Global onAPILoadReady is a special function called by ipcortex API
+	// wrapper
 	// to initialiase the API. Feed it something relevant.
-	onAPILoadReady = (function(){
+	onAPILoadReady = (function() {
 		IPCortex.PBX.Auth.login(username, password, null, authCB);
 	});
 	console.log('setup onAPILoadReady');
@@ -155,35 +175,41 @@
 		/**
 		 * Dial a number, optionally specify line
 		 * 
-		 * @param {number} number to dial
-		 * @param {number} [line=0] line index (zero based)
+		 * @param {number}
+		 *            number to dial
+		 * @param {number}
+		 *            [line=0] line index (zero based)
 		 */
-		dial: function(number, line) {
-			if(line == null || lines[line] == null)
+		dial : function(number, line) {
+			if (line == null || lines[line] == null)
 				line = 0;
 			// lines[line].enablertc();
-			lines[line].dial(number, true, true);		
+			lines[line].dial(number, true, true);
 		},
 
 		/**
 		 * Hangup a call
-		 * @param id {String} ID of call to hangup
+		 * 
+		 * @param id
+		 *            {String} ID of call to hangup
 		 */
-		hangup: function(id){
+		hangup : function(id) {
 			console.log('Hangup ID: ' + id);
 
-			if(id != null || calls[id] == null)
-				calls[id].hangup();		
+			if (id != null || calls[id] == null)
+				calls[id].hangup();
 		},
 
 		/**
 		 * Answer a call
-		 * @param id {String} ID of call to answer
+		 * 
+		 * @param id
+		 *            {String} ID of call to answer
 		 */
-		answer: function(id){
+		answer : function(id) {
 			console.log('Answer ID: ' + id);
 
-			if(id != null || calls[id] == null)
+			if (id != null || calls[id] == null)
 				calls[id].talk();
 		}
 	};

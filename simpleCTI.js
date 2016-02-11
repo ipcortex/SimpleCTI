@@ -11,7 +11,10 @@
  *
  * @constructor
  *
- * @param {String} username A valid PBX username for a user who owns a phone
+ * @param {String|Object} Either a username: A valid PBX username for a user who owns a phone, 
+ * in which case old style username/password login will be used, or an object containing functions
+ * (status, ring, up, dead), in which case auth credentials won't be sent to the PBX from this page
+ * but instead pop-out auth will be invoked (latter requires PBX firmware v6.1)
  * @param {String} password Password
  * @param {SimpleCTI~statusCallback} statusCB to call on error or successful API initialisation
  * @param {SimpleCTI~eventCallback} [ringCB] to call when a line on users phone rings

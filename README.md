@@ -7,19 +7,20 @@ It allows a web developer to make one Javascript call which will initialise the 
 ## Step 1
 Include both the SimpleCTI.js class and the normal IPCortex wrapper:
 
+```html
     <!DOCTYPE HTML>
     <html>
     <head>
     <script src="simpleCTI.js" type="text/javascript"></script>
     <!-- *** Substitute your appliance domain name below *** -->
     <script src="https://pabx.phone.voipcortex.co.uk/api/wrapper.whtm" type="text/javascript"></script>
+```
 
 ## Step 2
 
 Create an instance by calling the Constructor with a PBX username, password, and set of callback functions that you want to have invoked when something happens:
 
-    <script>
-
+```javascript
     // *** Substitute a real username and password below ***
     var CTI = new SimpleCTI("user1", "password", statusCB, eventCB, eventCB, eventCB);
 
@@ -62,10 +63,12 @@ Create an instance by calling the Constructor with a PBX username, password, and
         callstatus.innerHTML=description;
         statuspanel.src = 'http://www.google.com/custom?q='+number;
     }
+```
 
 ## Step 3
 Wait for status and call event updates via your callbacks!
 
+```html
     <title>Simple CTI Test page</title>
     </head>
     <body>
@@ -81,13 +84,15 @@ Wait for status and call event updates via your callbacks!
         <iframe id="statuspanel" height="400" width="100%"></iframe>
     </body>
     </html>
+```
 
 
 # Class Documentation
 
 <a name="SimpleCTI"></a>
 ## SimpleCTI
-Really simple example of a CTI class that allows client side Javascript to interactwith a PBX
+Really simple example of a CTI class that allows client side Javascript to interact
+with a PBX
 
 **Kind**: global class  
 
@@ -104,7 +109,10 @@ Really simple example of a CTI class that allows client side Javascript to inter
 
 <a name="new_SimpleCTI_new"></a>
 ### new SimpleCTI(callbacks)
-Creates a new SimpleCTI class using pop-out javascript auth.Plants callbacksthat will be used to signal API startup completion and called whena call status changes on a line.
+Creates a new SimpleCTI class using pop-out javascript auth.
+Plants callbacks
+that will be used to signal API startup completion and called when
+a call status changes on a line.
 
 
 | Param | Type | Description |

@@ -10,20 +10,31 @@
  * a call status changes on a line.
  *
  * @constructor
+ * @name SimpleCTI
  *
- * @param {String|Object} Either a username: A valid PBX username for a user who owns a phone, 
- * in which case old style username/password login will be used, or an object containing functions
- * (status, ring, up, dead), in which case auth credentials won't be sent to the PBX from this page
- * but instead pop-out auth will be invoked (latter requires PBX firmware v6.1)
- * @param {String} password Password
- * @param {SimpleCTI~statusCallback} statusCB to call on error or successful API initialisation
- * @param {SimpleCTI~eventCallback} [ringCB] to call when a line on users phone rings
- * @param {SimpleCTI~eventCallback} [upCB] to call when a line on users phone is answered
- * @param {SimpleCTI~eventCallback} [deadCB] to call when a line on users phone is hung up
+ * @param {Array} callbacks Array of functions (status, ring, up, dead as below),
+ * uses new form of pop-out auth (requires PBX firmware v6.1+)
  */
+ /**
+  * Old usage (PBX v6.0 and below)
+  *
+  * @constructor
+  * @name SimpleCTI
+  *
+  * @param {String} username A valid PBX username for a user who owns a phone
+  * @param {String} password Users password
+  * @param {SimpleCTI~statusCallback} statusCB to call on error or successful API initialisation -
+  *  old style usage only, not used if first param is an array of functions
+  * @param {SimpleCTI~eventCallback} [ringCB] to call when a line on users phone rings -
+  *  old style usage only, not used if first param is an array of functions
+  * @param {SimpleCTI~eventCallback} [upCB] to call when a line on users phone is answered -
+  *  old style usage only, not used if first param is an array of functions
+  * @param {SimpleCTI~eventCallback} [deadCB] to call when a line on users phone is hung up -
+  *  old style usage only, not used if first param is an array of functions
+  */
 /**
  * Status (initialisation) event callback
- * @callback SimpleCTI~statusCallback
+ * @name SimpleCTI~statusCallback
  * @param ok {Boolean} true or false:
  *      true: API successfully started
  *      false: error condition
@@ -34,7 +45,7 @@
 /**
  * Call event callback
  *
- * @callback SimpleCTI~eventCallback
+ * @name SimpleCTI~eventCallback
  * @param state
  *            {String} one of 'ring', 'up', 'dead' - new state of call
  * @param number
@@ -47,7 +58,6 @@
  * @param line
  *            {Object} Raw underlying line object
  */
-
 var SimpleCTI = (function(arg1, password, statusCB, ringCB, upCB, deadCB) {
     // Alternative usage function(Object callbacks);
     var CB;
@@ -73,7 +83,7 @@ var SimpleCTI = (function(arg1, password, statusCB, ringCB, upCB, deadCB) {
     /**
      * This private method is called by the API when login is initialised Just
      * checks login status and starts API polling
-     *
+     * @private
      * @param ok
      */
     function authCB(ok) {
@@ -93,6 +103,7 @@ var SimpleCTI = (function(arg1, password, statusCB, ringCB, upCB, deadCB) {
     /**
      * Handler for any error events
      *
+     * @private
      * @param n
      * @param m
      */
@@ -103,6 +114,7 @@ var SimpleCTI = (function(arg1, password, statusCB, ringCB, upCB, deadCB) {
 
     /**
      * Handler for API initialised event
+     * @private
      */
     function go() {
         console.log('SimpleCTI.go()');
@@ -114,7 +126,7 @@ var SimpleCTI = (function(arg1, password, statusCB, ringCB, upCB, deadCB) {
 
     /**
      * Handler for lines list callback
-     *
+     * @private
      * @param l
      */
     function linesCB(l) {
@@ -135,6 +147,7 @@ var SimpleCTI = (function(arg1, password, statusCB, ringCB, upCB, deadCB) {
     /**
      * Handler for PBX line event callback
      *
+     * @private
      * @param f
      * @param h
      * @param l
@@ -193,7 +206,7 @@ var SimpleCTI = (function(arg1, password, statusCB, ringCB, upCB, deadCB) {
 
         /**
          * Dial a number, optionally specify line
-         *
+         * @function SimpleCTI.dial
          * @param {number}
          *            number to dial
          * @param {number}
@@ -208,7 +221,7 @@ var SimpleCTI = (function(arg1, password, statusCB, ringCB, upCB, deadCB) {
 
         /**
          * Hangup a call
-         *
+         * @function SimpleCTI.hangup
          * @param id
          *            {String} ID of call to hangup
          */
@@ -222,6 +235,7 @@ var SimpleCTI = (function(arg1, password, statusCB, ringCB, upCB, deadCB) {
         /**
          * Answer a call
          *
+         * @function SimpleCTI.answer
          * @param id
          *            {String} ID of call to answer
          */

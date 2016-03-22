@@ -1,24 +1,23 @@
-/**
- * Really simple example of a CTI class that allows client side Javascript to interact
- * with a PBX
- */
 
 /**
- * Creates a new SimpleCTI singleton and initialises it with the user info
- * that it will use to authenticate against the PBX. Plants callbacks
+ * Creates a new SimpleCTI class using pop-out javascript auth.
+ * Plants callbacks
  * that will be used to signal API startup completion and called when
  * a call status changes on a line.
  *
- * @constructor
- * @name SimpleCTI
  *
+ * @constructs
+ * @class SimpleCTI
+ * @classdesc Really simple example of a CTI class that allows client side Javascript to interact
+ * with a PBX
  * @param {Array} callbacks Array of functions (status, ring, up, dead as below),
  * uses new form of pop-out auth (requires PBX firmware v6.1+)
  */
  /**
   * Old usage (PBX v6.0 and below)
   *
-  * @constructor
+  *
+  * @constructs
   * @name SimpleCTI
   *
   * @param {String} username A valid PBX username for a user who owns a phone

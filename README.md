@@ -20,7 +20,8 @@ Include both the SimpleCTI.js class and the normal IPCortex wrapper:
 
 Create an instance by calling the Constructor with a PBX username, password, and set of callback functions that you want to have invoked when something happens:
 
-```javascript
+```html
+<script>
     // *** Substitute a real username and password below ***
     var CTI = new SimpleCTI("user1", "password", statusCB, eventCB, eventCB, eventCB);
 
@@ -63,6 +64,7 @@ Create an instance by calling the Constructor with a PBX username, password, and
         callstatus.innerHTML=description;
         statuspanel.src = 'http://www.google.com/custom?q='+number;
     }
+</script>
 ```
 
 ## Step 3
